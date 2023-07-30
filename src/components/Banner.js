@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import "./Banner.css";
 import MenuIcon from "@mui/icons-material/Menu";
 import IconButton from "@mui/material/IconButton";
@@ -7,21 +6,30 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import PersonIcon from "@mui/icons-material/Person";
 import { useSelector, useDispatch } from "react-redux";
+import { setCategory } from "../store/productSlice";
+import { setSearchQuery } from "../store/productSlice";
 
 function Banner() {
-  const SELECT_CATEGORY = useSelector((category) => category);
+
+   // Getting selected category and search query from the Redux store
+  const selectedCategory = useSelector(
+    (state) => state.product.selectedCategory
+  );
+  const searchQuery = useSelector((state) => state.product.searchQuery);
   const dispatch = useDispatch();
 
+    // Handler for changing the selected category
   const handleCategoryChange = (event) => {
     const newValue = event.target.value;
     console.log("Selected Category:", newValue);
-    dispatch({ type: "SELECT_CATEGORY", payload: newValue });
+    dispatch(setCategory(newValue));
   };
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const handleSearch = (e) => {
+   // Handler for performing the search
+  const handleSearch = () => {
+    console.log("search button clicked");
     console.log("Search Query:", searchQuery);
-    dispatch({ type: "SET_SEARCH_QUERY", payload: searchQuery });
+    dispatch(setSearchQuery(searchQuery));
   };
 
   return (
@@ -37,6 +45,7 @@ function Banner() {
         }}
       >
         <div
+          className="header_options"
           style={{
             display: "flex",
             justifyContent: "space-evenly",
@@ -68,60 +77,74 @@ function Banner() {
 
       {/* Search options */}
       <div className="filter">
-        <IconButton color="primary" sx={{ color: "#fff" }}>
-          <MenuIcon />
+        <IconButton
+          color="primary"
+          sx={{ color: "#fff" }}
+          className="btn iconButton"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseWidthExample"
+          aria-expanded="true"
+        >
+          <MenuIcon fontSize="large" />
         </IconButton>
-        <Select
-          value={SELECT_CATEGORY}
-          size="small"
-          sx={{ color: "#fff", backgroundColor: "grey" }}
-          onChange={handleCategoryChange}
-        >
-          <MenuItem value="All Category">All Category</MenuItem>
-          <MenuItem value="men's clothing">Men's clothing</MenuItem>
-          <MenuItem value="jewelery">Jewelery</MenuItem>
-          <MenuItem value="electronics">Electronics</MenuItem>
-          <MenuItem value="women's clothing">Women's clothing</MenuItem>
-        </Select>
         <div
-          style={{ display: "flex", justifyContent: "center", width: "40%" }}
+          className="filter_options collapse collapse-horizontal show"
+          id="collapseWidthExample"
         >
-          <TextField
+          <Select
+            value={selectedCategory}
             size="small"
-            sx={{
-              backgroundColor: "#fff",
-              color: "#000",
-              borderRadius: "10px",
-              width: "100%",
-              marginTop: 0,
-              marginBottom: 0,
-            }}
-            placeholder="Search this blog"
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <IconButton
-            color="primary"
-            sx={{ backgroundColor: "#f26522", borderRadius: "5px" }}
-            onClick={() => handleSearch}
+            sx={{ color: "#fff", backgroundColor: "grey" }}
+            onChange={handleCategoryChange}
           >
-            <SearchIcon style={{ color: "#fff" }} />
-          </IconButton>
+            <MenuItem value="All Category">All Category</MenuItem>
+            <MenuItem value="men's clothing">Men's clothing</MenuItem>
+            <MenuItem value="jewelery">Jewelery</MenuItem>
+            <MenuItem value="electronics">Electronics</MenuItem>
+            <MenuItem value="women's clothing">Women's clothing</MenuItem>
+          </Select>
+          <div
+            className="search_field"
+            style={{ display: "flex", justifyContent: "center", width: "40%" }}
+          >
+            <TextField
+              className="searchBox"
+              size="large"
+              sx={{
+                backgroundColor: "#fff",
+                color: "#000",
+                borderRadius: "10px",
+                width: "100%",
+                marginTop: 0,
+                marginBottom: 0,
+              }}
+              placeholder="Search this blog"
+              onChange={(e) => dispatch(setSearchQuery(e.target.value))}
+            />
+            <IconButton
+              color="primary"
+              sx={{ backgroundColor: "#f26522", borderRadius: "5px" }}
+              onClick={handleSearch}
+            >
+              <SearchIcon style={{ color: "#fff" }} />
+            </IconButton>
+          </div>
+
+          <Select value="English" size="small" sx={{ backgroundColor: "#fff" }}>
+            <MenuItem value="English">English</MenuItem>
+            <MenuItem value="Hindi">Hindi</MenuItem>
+            <MenuItem value="Marathi">Marathi</MenuItem>
+          </Select>
+
+          <Button startIcon={<AddShoppingCartIcon />} sx={{ color: "#fff" }}>
+            Cart
+          </Button>
+          <Button startIcon={<PersonIcon />} sx={{ color: "#fff" }}>
+            Cart
+          </Button>
         </div>
-
-        <Select value="English" size="small" sx={{ backgroundColor: "#fff" }}>
-          <MenuItem value="English">English</MenuItem>
-          <MenuItem value="Hindi">Hindi</MenuItem>
-          <MenuItem value="Marathi">Marathi</MenuItem>
-        </Select>
-
-        <Button startIcon={<AddShoppingCartIcon />} sx={{ color: "#fff" }}>
-          Cart
-        </Button>
-        <Button startIcon={<PersonIcon />} sx={{ color: "#fff" }}>
-          Cart
-        </Button>
       </div>
-
       {/* Search options */}
 
       <div
