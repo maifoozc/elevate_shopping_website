@@ -1,18 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Banner.css";
 import MenuIcon from "@mui/icons-material/Menu";
 import IconButton from "@mui/material/IconButton";
-import {
-  Button,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, MenuItem, Select, TextField, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import PersonIcon from "@mui/icons-material/Person";
+import { useSelector, useDispatch } from "react-redux";
+
 function Banner() {
+  const SELECT_CATEGORY = useSelector((category) => category);
+  const dispatch = useDispatch();
+
+  const handleCategoryChange = (event) => {
+    const newValue = event.target.value;
+    console.log("Selected Category:", newValue);
+    dispatch({ type: "SELECT_CATEGORY", payload: newValue });
+  };
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const handleSearch = (e) => {
+    console.log("Search Query:", searchQuery);
+    dispatch({ type: "SET_SEARCH_QUERY", payload: searchQuery });
+  };
+
   return (
     <div className="banner">
       {/* menu options */}
@@ -61,9 +72,10 @@ function Banner() {
           <MenuIcon />
         </IconButton>
         <Select
-          value="All Category"
+          value={SELECT_CATEGORY}
           size="small"
           sx={{ color: "#fff", backgroundColor: "grey" }}
+          onChange={handleCategoryChange}
         >
           <MenuItem value="All Category">All Category</MenuItem>
           <MenuItem value="men's clothing">Men's clothing</MenuItem>
@@ -85,10 +97,12 @@ function Banner() {
               marginBottom: 0,
             }}
             placeholder="Search this blog"
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
           <IconButton
             color="primary"
             sx={{ backgroundColor: "#f26522", borderRadius: "5px" }}
+            onClick={() => handleSearch}
           >
             <SearchIcon style={{ color: "#fff" }} />
           </IconButton>
@@ -126,7 +140,12 @@ function Banner() {
       </div>
       <Button
         variant="outlined"
-        sx={{ color: "#fff", backgroundColor: "black", width: "10%" , margin:'2%'}}
+        sx={{
+          color: "#fff",
+          backgroundColor: "black",
+          width: "10%",
+          margin: "2%",
+        }}
       >
         Buy Now
       </Button>
